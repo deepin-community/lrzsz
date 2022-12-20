@@ -1,0 +1,55 @@
+#Author: renyehui <renyehui@uniontech.com>  
+#Date: Tue, 21 Jun 2022 21:09:16 +0800
+#Subject: Add header file
+
+diff -Naur lrzsz/config.h.in lrzsz-ch/config.h.in
+--- a/config.h.in	2022-06-21 20:49:50.204816143 +0800
++++ b/config.h.in	2022-06-21 20:56:51.585727992 +0800
+@@ -307,19 +307,19 @@
+ #undef HAVE_SYS_TIMES_H
+ 
+ /* Define if you have the <syslog.h> header file.  */
+-#undef HAVE_SYSLOG_H
++#define HAVE_SYSLOG_H
+ 
+ /* Define if you have the <termio.h> header file.  */
+ #undef HAVE_TERMIO_H
+ 
+ /* Define if you have the <termios.h> header file.  */
+-#undef HAVE_TERMIOS_H
++#define HAVE_TERMIOS_H
+ 
+ /* Define if you have the <unistd.h> header file.  */
+-#undef HAVE_UNISTD_H
++#define HAVE_UNISTD_H
+ 
+ /* Define if you have the <utime.h> header file.  */
+-#undef HAVE_UTIME_H
++#define HAVE_UTIME_H
+ 
+ /* Define if you have the be library (-lbe).  */
+ #undef HAVE_LIBBE
+diff -Naur lrzsz/src/lrz.c lrzsz-ch/src/lrz.c
+--- a/src/lrz.c	2022-06-21 20:49:50.216816400 +0800
++++ b/src/lrz.c	2022-06-21 20:57:31.394560593 +0800
+@@ -23,6 +23,7 @@
+ */
+ 
+ #include "zglobal.h"
++#include <locale.h>
+ 
+ #define SS_NORMAL 0
+ #include <stdio.h>
+diff -Naur lrzsz/src/lsz.c lrzsz-ch/src/lsz.c
+--- a/src/lsz.c	2022-06-21 20:49:50.216816400 +0800
++++ b/src/lsz.c	2022-06-21 20:58:53.856281758 +0800
+@@ -22,6 +22,9 @@
+   originally written by Chuck Forsberg
+ */
+ #include "zglobal.h"
++#include <locale.h>   
++#include <sys/stat.h>  
++#include <fcntl.h>
+ 
+ /* char *getenv(); */
+ 
