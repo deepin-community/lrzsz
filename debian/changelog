@@ -1,3 +1,9 @@
+lrzsz (0.12.21-deepin2) unstable; urgency=medium
+
+  * feat: add sw64 support.
+
+ -- hudeng <hudeng@deepin.org>  Fri, 30 May 2025 10:26:37 +0800
+
 lrzsz (0.12.21-deepin1) unstable; urgency=medium
 
   * Rebuild

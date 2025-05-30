@@ -11,6 +11,10 @@ else
 endif
 
 CPPFLAGS = $(shell dpkg-buildflags --get CPPFLAGS)
+ifeq ($(shell dpkg-architecture -q DEB_BUILD_ARCH), sw_64)
+  CPPFLAGS := $(subst -D_FORTIFY_SOURCE=2,,$(CPPFLAGS))
+endif
+
 CFLAGS   = $(shell dpkg-buildflags --get CFLAGS)
 LDFLAGS  = $(shell dpkg-buildflags --get LDFLAGS)
 BUILD_DATE=$(shell dpkg-parsechangelog --show-field Date)
@@ -30,6 +34,9 @@ build-stamp:
 	./configure $(CONFFLAGS) --prefix=/usr --mandir='$${prefix}/share/man' --program-transform-name=s/l//
 	touch stamp-h.in # to stop autoheader from running
 	touch -d yesterday aclocal.m4 # to stop automake from running
+	touch -d "1999-08-22 19:59:00" ./acinclude.m4 #if not modify aclocal will failed by lutianyu 2021-2-18 
+	touch -d "2021-02-18 01:31:00" ./configure
+	touch -d "1999-08-22 19:59:00" ./configure.in
 	$(MAKE)
 	touch $@
 
@@ -39,6 +46,9 @@ clean:
 	cp -f /usr/share/misc/config.guess /usr/share/misc/config.sub .
 	touch stamp-h.in # to stop autoheader from running
 	touch -d yesterday aclocal.m4 # to stop automake from running
+	touch -d "1999-08-22 19:59:00" ./acinclude.m4 #if not modify aclocal will failed by lutianyu 2021-2-18
+	touch -d "2021-02-18 01:31:00" ./configure
+	touch -d "1999-08-22 19:59:00" ./configure.in
 	[ ! -f Makefile ] || $(MAKE) distclean
 	rm -rf debian/tmp
 	rm -f build-stamp config.guess config.sub po/lrzsz.pot po/*.gmo debian/files debian/rejected debian/substvars
