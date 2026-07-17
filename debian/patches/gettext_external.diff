@@ -1,0 +1,14 @@
+Description: Call AM_GNU_GETTEXT with external
+Author: Bastian Germann <bage@debian.org>
+---
+--- lrzsz-0.12.21rc.orig/configure.in
++++ lrzsz-0.12.21rc/configure.in
+@@ -268,7 +268,7 @@ AC_SUBST(CFLAGS)
+ AC_SUBST(LDFLAGS)
+ AC_SUBST(LIBS)
+ 
+-AM_GNU_GETTEXT
++AM_GNU_GETTEXT([external])
+ 
+ AC_DEFINE_UNQUOTED(LOCALEDIR,"$prefix/$DATADIRNAME")
+ dnl AC_LINK_FILES($nls_cv_header_libgt, $nls_cv_header_intl)

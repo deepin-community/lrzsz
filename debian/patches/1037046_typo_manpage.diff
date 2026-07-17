@@ -1,0 +1,15 @@
+Description: Fixed typo in manpage
+Author: Uwe Kleine-König <ukleinek@debian.org>
+Bug-Debian: https://bugs.debian.org/1066514
+
+--- lrzsz-0.12.21.orig/man/lrz.1
++++ lrzsz-0.12.21/man/lrz.1
+@@ -172,7 +172,7 @@ file transfer override.
+ .B "-B NUMBER, --bufsize NUMBER"
+ Buffer 
+ .B NUMBER
+-bytes before writing to disk. Default ist 32768, which should be enough
++bytes before writing to disk. Default is 32768, which should be enough
+ for most situations. If you have a slow machine or a bad disk interface
+ or suffer from other hardware problems you might want to increase
+ the buffersize.

@@ -1,0 +1,84 @@
+Description: Fixes FTBFS (missing includes)
+Author: Martin A. Godisch <godisch@debian.org>
+Bug-Debian: https://bugs.debian.org/1066514
+
+--- lrzsz-0.12.21.orig/lib/error.c
++++ lrzsz-0.12.21/lib/error.c
+@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suit
+ #endif
+ 
+ #include <stdio.h>
++#include <string.h>
+ 
+ #if HAVE_VPRINTF || HAVE_DOPRNT || _LIBC || defined(__cplusplus)
+ # if __STDC__ || defined(__cplusplus)
+--- lrzsz-0.12.21.orig/src/canit.c
++++ lrzsz-0.12.21/src/canit.c
+@@ -24,6 +24,7 @@
+ #define SS_NORMAL 0
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <signal.h>
+ #include <setjmp.h>
+ #include <ctype.h>
+--- lrzsz-0.12.21.orig/src/lrz.c
++++ lrzsz-0.12.21/src/lrz.c
+@@ -27,6 +27,7 @@
+ #define SS_NORMAL 0
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <signal.h>
+ #include <ctype.h>
+ #include <errno.h>
+--- lrzsz-0.12.21.orig/src/lsyslog.c
++++ lrzsz-0.12.21/src/lsyslog.c
+@@ -18,6 +18,7 @@
+   02111-1307, USA.
+ 
+ */
++#define _GNU_SOURCE
+ #include "config.h"
+ #ifdef ENABLE_SYSLOG
+ #include "zglobal.h"
+--- lrzsz-0.12.21.orig/src/lsz.c
++++ lrzsz-0.12.21/src/lsz.c
+@@ -28,6 +28,7 @@
+ #define SS_NORMAL 0
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <signal.h>
+ #include <setjmp.h>
+ #include <ctype.h>
+--- lrzsz-0.12.21.orig/src/tcp.c
++++ lrzsz-0.12.21/src/tcp.c
+@@ -33,6 +33,7 @@
+ #include <ctype.h>
+ #include <stdio.h>
+ #include <signal.h>
++#include <string.h>
+ 
+ #include "zglobal.h"
+ #include <stdlib.h>
+--- lrzsz-0.12.21.orig/src/zperr.c
++++ lrzsz-0.12.21/src/zperr.c
+@@ -22,6 +22,7 @@
+ #include "zglobal.h"
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <errno.h>
+ 
+ #ifdef __STDC__
+--- lrzsz-0.12.21.orig/src/zreadline.c
++++ lrzsz-0.12.21/src/zreadline.c
+@@ -27,6 +27,7 @@
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
++#include <string.h>
+ #include <signal.h>
+ #include <ctype.h>
+ #include <errno.h>
