@@ -13,3 +13,5 @@ configure.in.diff
 ansi2knr.diff
 gettext_external.diff
 ignore-intl.diff
+uniontech001_add_header_file.patch
+0001-deepin-sw_64-support.diff

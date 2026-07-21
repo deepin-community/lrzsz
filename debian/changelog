@@ -1,3 +1,11 @@
+lrzsz (0.12.21rc-0.2deepin1) unstable; urgency=medium
+
+  * Restore deepin-specific patches:
+    - Add uniontech header file support
+    - Add sw_64 architecture support
+
+ -- lichenggang <lichenggang@uniontech.com>  Fri, 17 Jul 2026 08:00:00 +0000
+
 lrzsz (0.12.21rc-0.2) unstable; urgency=medium
 
   * Non-maintainer upload.
