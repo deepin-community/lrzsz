@@ -1,0 +1,65 @@
+Description: fixes some compiler warnings
+Author: Martin A. Godisch <godisch@debian.org>
+
+--- lrzsz-0.12.21.orig/po/cat-id-tbl.c
++++ lrzsz-0.12.21/po/cat-id-tbl.c
+@@ -128,7 +128,7 @@ const struct _msg_ent _msg_tbl[] = {
+ short options use the same arguments as the long ones\n", 71},
+   {"got ZRQINIT", 72},
+   {"got ZCAN", 73},
+-  {"blklen now %d\n", 74},
++  {"blklen now %lu\n", 74},
+   {"zsendfdata: bps rate %ld below min %ld", 75},
+   {"zsendfdata: reached stop time", 76},
+   {"Bytes Sent:%7ld/%7ld   BPS:%-8ld ETA %02d:%02d  ", 77},
+--- lrzsz-0.12.21.orig/src/lrz.c
++++ lrzsz-0.12.21/src/lrz.c
+@@ -2330,7 +2330,7 @@ exec2(const char *s)
+ 	if (*s == '!')
+ 		++s;
+ 	io_mode(0,0);
+-	execl("/bin/sh", "sh", "-c", s);
++	execl("/bin/sh", "sh", "-c", s, NULL);
+ 	zpfatal("execl");
+ 	exit(1);
+ }
+--- lrzsz-0.12.21.orig/src/lsz.c
++++ lrzsz-0.12.21/src/lsz.c
+@@ -2025,7 +2025,7 @@ zsendfdata (struct zm_fileinfo *zi)
+ 		blklen = calc_blklen (total_sent);
+ 		total_sent += blklen + OVERHEAD;
+ 		if (Verbose > 2 && blklen != old)
+-			vstringf (_("blklen now %d\n"), blklen);
++			vstringf (_("blklen now %lu\n"), blklen);
+ #ifdef HAVE_MMAP
+ 		if (mm_addr) {
+ 			if (zi->bytes_sent + blklen < mm_size)
+--- lrzsz-0.12.21.orig/src/zm.c
++++ lrzsz-0.12.21/src/zm.c
+@@ -454,7 +454,7 @@ zsda32(const char *buf, size_t length, i
+ 	int c;
+ 	unsigned long crc;
+ 	int i;
+-	VPRINTF(3,("zsdat32: %d %s", length, Zendnames[(frameend-ZCRCE)&3]));
++	VPRINTF(3,("zsdat32: %lu %s", length, Zendnames[(frameend-ZCRCE)&3]));
+ 
+ 	crc = 0xFFFFFFFFL;
+ 	zsendline_s(buf,length);
+--- lrzsz-0.12.21.orig/src/zreadline.c
++++ lrzsz-0.12.21/src/zreadline.c
+@@ -69,13 +69,13 @@ readline_internal(unsigned int timeout)
+ 		else if (n==0)
+ 			n=1;
+ 		if (Verbose > 5)
+-			vstringf("Calling read: alarm=%d  Readnum=%d ",
++			vstringf("Calling read: alarm=%d  Readnum=%lu ",
+ 			  n, readline_readnum);
+ 		signal(SIGALRM, zreadline_alarm_handler); 
+ 		alarm(n);
+ 	}
+ 	else if (Verbose > 5)
+-		vstringf("Calling read: Readnum=%d ",
++		vstringf("Calling read: Readnum=%lu ",
+ 		  readline_readnum);
+ 
+ 	readline_ptr=readline_buffer;

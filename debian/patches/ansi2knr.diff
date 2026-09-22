@@ -1,0 +1,22 @@
+Description: Remove ansi2knr rules
+Author: Bastian Germann <bage@debian.org>
+---
+--- lrzsz-0.12.21rc.orig/lib/Makefile.am
++++ lrzsz-0.12.21rc/lib/Makefile.am
+@@ -1,6 +1,5 @@
+ noinst_LIBRARIES=libzmodem.a
+ CFLAGS=@CFLAGS@
+-AUTOMAKE_OPTIONS=ansi2knr
+ 
+ EXTRA_DIST = alloca.c ansi2knr.1 ansi2knr.c \
+ 	getopt.c getopt1.c mkdir.c mktime.c \
+--- lrzsz-0.12.21rc.orig/src/Makefile.am
++++ lrzsz-0.12.21rc/src/Makefile.am
+@@ -8,7 +8,6 @@ CFLAGS=@CFLAGS@
+ DISTCLEAN_FILES=lrzszbug
+ 
+ LDADD = ../lib/libzmodem.a @INTLLIBS@
+-AUTOMAKE_OPTIONS=ansi2knr
+ EXTRA_DIST = ansi2knr.1 ansi2knr.c lrzszbug.in
+ INCLUDES = -I.. -I$(srcdir) -I$(top_srcdir)/src -I../intl -I$(top_srcdir)/lib
+ #DEFS = -DLOCALEDIR=\"$(localedir)\" -DOS=\"@host_os@\" -DCPU=\"@host_cpu@\"

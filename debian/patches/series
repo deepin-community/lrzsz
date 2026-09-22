@@ -5,5 +5,11 @@ include.diff
 mantypos.diff
 strstr.diff
 897010_zsdata.diff
-uniontech001_add_header_file.patch
-0001-deepin-sw_64-support.diff
+1066514_FTBFS_implicit_declaration.diff
+206648_DSZLOG_support.diff
+1037046_typo_manpage.diff
+warnings.diff
+configure.in.diff
+ansi2knr.diff
+gettext_external.diff
+ignore-intl.diff
