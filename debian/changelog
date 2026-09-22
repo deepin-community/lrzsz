@@ -1,14 +1,30 @@
-lrzsz (0.12.21-deepin2) unstable; urgency=medium
+lrzsz (0.12.21rc-0.2) unstable; urgency=medium
 
-  * feat: add sw64 support.
+  * Non-maintainer upload.
+  * Remove need for root when building the package.
+    (Closes: #1089380)
 
- -- hudeng <hudeng@deepin.org>  Fri, 30 May 2025 10:26:37 +0800
+ -- Niels Thykier <niels@thykier.net>  Wed, 01 Jan 2025 12:16:48 +0000
 
-lrzsz (0.12.21-deepin1) unstable; urgency=medium
+lrzsz (0.12.21rc-0.1) unstable; urgency=medium
 
-  * Rebuild
+  * Non-maintainer upload.
+  * New upstream version, closes: #206639.
+  * Build with dh_autoreconf, without native language support, closes: #1075238.
 
- -- Deepin Packages Builder <packages@deepin.org>  Fri, 11 Nov 2022 18:01:01 +0800
+  [ Helmut Grohne ]
+  * Make cross compilation work, closes: #873810.
+
+ -- Bastian Germann <bage@debian.org>  Fri, 13 Sep 2024 08:57:20 +0200
+
+lrzsz (0.12.21-11) unstable; urgency=low
+
+  * Fixed FTBFS, closes: #1066514.
+  * Fixed typo in manpage, closes: #1037046.
+  * Added DOS-style DSZLOG support, closes: #206648. Thanks to Ryan Underwood.
+  * Fixed some compiler warnings.
+
+ -- Martin A. Godisch <godisch@debian.org>  Sun, 17 Mar 2024 07:12:52 +0100
 
 lrzsz (0.12.21-10) unstable; urgency=high
 

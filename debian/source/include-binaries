@@ -1,0 +1,5 @@
+lib/error.o
+lib/libzmodem.a
+lib/long-options.o
+lib/xstrtol.o
+lib/xstrtoul.o
