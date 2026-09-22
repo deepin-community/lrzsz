@@ -1,0 +1,22 @@
+From: hudeng <hudeng@deepin.org>
+Date: Fri, 30 May 2025 02:24:54 +0000
+Subject: feat: add sw support
+
+---
+ systype.in | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/systype.in b/systype.in
+index 9d51b15..165bf7d 100644
+--- a/systype.in
++++ b/systype.in
+@@ -69,6 +69,9 @@ then
+     alpha)
+       arch="alpha"
+       ;;
++    sw_64)
++      arch="sw_64"
++      ;;
+     esac
+     ;;
+   aix)
