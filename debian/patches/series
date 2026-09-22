@@ -13,3 +13,4 @@ configure.in.diff
 ansi2knr.diff
 gettext_external.diff
 ignore-intl.diff
+0016-feat-add-sw-support.patch
