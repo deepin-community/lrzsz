@@ -1,5 +1,6 @@
 Description: fixes some compiler warnings
 Author: Martin A. Godisch <godisch@debian.org>
+Forwarded: not-needed
 
 --- lrzsz-0.12.21.orig/po/cat-id-tbl.c
 +++ lrzsz-0.12.21/po/cat-id-tbl.c

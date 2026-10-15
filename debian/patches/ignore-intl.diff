@@ -1,5 +1,6 @@
 Description: Ignore building intl
 Author: Bastian Germann <bage@debian.org>
+Forwarded: not-needed
 ---
 --- lrzsz-0.12.21rc.orig/Makefile.am
 +++ lrzsz-0.12.21rc/Makefile.am

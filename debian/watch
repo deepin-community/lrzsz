@@ -1,2 +1,10 @@
-version=3
-https://ohse.de/uwe/software/lrzsz.html .*/lrzsz-(\d\S*)\.(?:zip|tgz|tbz|txz|(?:tar\.(?:gz|bz2|xz)))
+version=4
+
+# Upstream (Uwe Ohse) is dormant: the last formal release is 0.12.20 (1998) and
+# the packaged 0.12.21rc has effectively been the final release for over twenty
+# years. ohse.de does not index the 0.12.21rc tarball on any browsable page,
+# but Uwe's GitHub repository README links it directly, so scan that page for
+# the release and fetch the tarball from its canonical location on ohse.de.
+opts="downloadurlmangle=s%^http://%https://%" \
+https://github.com/UweOhse/lrzsz \
+(?:.*/)?lrzsz-(\d[\d.]+\w*)\.tar\.gz

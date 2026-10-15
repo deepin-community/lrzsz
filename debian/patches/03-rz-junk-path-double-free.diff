@@ -1,0 +1,22 @@
+Description: rz: clear file name aliases on the --junk-path error path
+ procheader() freed name_static without clearing it or zi->fname, which still
+ aliased the freed block. With --junk-path a name ending in '/' returns ERROR,
+ and the caller's error logging then dereferenced the dangling zi->fname
+ (use-after-free); a following transfer freed name_static again (double free).
+ Set both name_static and zi->fname to NULL after freeing.
+Forwarded: no
+--- fixed.orig/src/lrz.c
++++ fixed/src/lrz.c
+@@ -1125,8 +1125,11 @@ procheader(char *name, struct zm_fileinf
+ 	static char *name_static=NULL;
+ 	char *nameend;
+ 
+-	if (name_static)
++	if (name_static) {
+ 		free(name_static);
++		name_static = NULL;
++	}
++	zi->fname = NULL;
+ 	if (junk_path) {
+ 		p=strrchr(name,'/');
+ 		if (p) {

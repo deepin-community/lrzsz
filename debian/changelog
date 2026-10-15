@@ -1,8 +1,115 @@
-lrzsz (0.12.21rc-0.2deepin1) unstable; urgency=medium
+lrzsz (0.12.21rc-5) unstable; urgency=medium
 
-  * Add sw support.
+  * Fix a series of security-related bugs. Thanks to Daniel Birtwhistle for
+    bringing these to our attention and for his support during patch
+    verification:
+    * 01-rz-reject-absolute-paths.diff: reject sender-supplied absolute paths
+      in rz restricted mode.
+    * 02-rz-terminate-received-strings.diff: reject over-length received file
+      names, fixing an out-of-bounds read and a one-byte heap overwrite on
+      maximum-length ZFILE names; also terminate the receiver buffer.
+    * 03-rz-junk-path-double-free.diff: fix a double-free and a use-after-free
+      when a --junk-path name ends in '/'.
+    * 04-rz-null-flag-use-after-free.diff: fix use-after-free with -D/--null.
 
- -- Tianyu Chen <sweetyfish@deepin.org>  Tue, 22 Sep 2026 17:22:56 +0800
+ -- Martin A. Godisch <godisch@debian.org>  Sun, 23 Aug 2026 10:17:41 +0200
+
+lrzsz (0.12.21rc-4) unstable; urgency=low
+
+  * Added salsa repository.
+  * debian/control: added Vcs-Git and Vcs-Browser fields, closes: #733721.
+
+ -- Martin A. Godisch <godisch@debian.org>  Fri, 19 Jun 2026 08:32:57 +0200
+
+lrzsz (0.12.21rc-3) unstable; urgency=low
+
+  * Drop the lsz.1 documentation of the sz -T/-TT test and diagnostic modes.
+    These were inherited from Chuck Forsberg's original sz but do not exist in
+    lrzsz, where -T is bound solely to --turbo. A user following the manual's
+    "sz -TT" diagnosis instructions therefore only ran --turbo twice and got a
+    normal, failing transfer to the terminal. Add new patch
+    618357_manpage_remove_test_mode.diff removing the stale -TT synopsis form,
+    the "sixth form" paragraph, the "TESTING FEATURE" section and the orphaned
+    BUGS sentence, closes: #618357.
+  * Clarify in lsz.1 that the advertised YMODEM-g support only applies when the
+    receiving program requests it (by sending 'G'), and that lrzsz's own rb/rz
+    cannot do so, hence a separate receiver is required. This explains why the
+    feature seemed missing. Add new patch 206499_ymodemg_doc.diff,
+    closes: #206499.
+  * Make debian/watch usable again. ohse.de does not index the packaged
+    0.12.21rc tarball on any browsable page, but upstream's GitHub repository
+    README links it directly; scan that page for the release and fetch the
+    tarball from its canonical ohse.de location.
+
+ -- Martin A. Godisch <godisch@debian.org>  Fri, 19 Jun 2026 05:56:36 +0200
+
+lrzsz (0.12.21rc-2) unstable; urgency=low
+
+  * Fix FTBFS with "make --shuffle=reverse". The upstream src/Makefile.am
+    install-exec-local hook hard-links the installed binaries but does not
+    depend on install-binPROGRAMS, so under shuffled prerequisite order it ran
+    before the binaries were installed and ln aborted. Add new patch
+    1105467_shuffle_install_order.diff declaring the dependency explicitly,
+    closes: #1105467.
+  * Keep syslog timestamps locale-independent. setlocale(LC_ALL, "") in lrz/lsz
+    also set LC_TIME, which the C library's syslog() used for the message
+    timestamp, so log lines from sz/rz showed a translated month name while the
+    rest of the log stayed English. Add new patch
+    57884_syslog_locale_timestamp.diff resetting LC_TIME to "C", closes: #57884.
+  * Fix the XMODEM "Blocks received" counter for files larger than 255 blocks.
+    wcrx() displayed the raw one-byte block number, which wraps at 255, so the
+    on-screen count restarted at 0 (showing "055", "155", ... due to the
+    carriage-return redraw) instead of continuing 256, 257, ... Add new patch
+    156249_xmodem_block_counter.diff reporting the running sector total instead,
+    closes: #156249.
+  * Silence the only remaining C compiler warning: siginterrupt() is deprecated
+    (-Wdeprecated-declarations). Add new patch fix_siginterrupt_deprecation.diff
+    installing the SIGALRM handlers via sigaction() with sa_flags = 0 instead,
+    preserving the "interrupt blocking syscalls on timeout" behaviour.
+  * Bump Standards-Version to 4.7.4 (no further changes required).
+  * Switch to debhelper compat level 13.
+  * Add ${misc:Depends} to the binary package's Depends.
+  * Update debian/watch to format version 4.
+  * Refresh the debian/copyright header (current maintainer, upstream URL).
+  * Packaging QA: add DEP-3 Description/Forwarded headers to all quilt patches;
+    drop the obsolete debian/source/include-binaries (its entries no longer
+    exist in the tree) and the stray, non-series patch
+    206499_ymodemg.diff.unchecked.
+
+ -- Martin A. Godisch <godisch@debian.org>  Thu, 18 Jun 2026 14:02:51 +0200
+
+lrzsz (0.12.21rc-1) unstable; urgency=medium
+
+  * Fix FTBFS with gettext 0.26 / modern autopoint. configure.in used
+    AM_GNU_GETTEXT without any version declaration, so autopoint assumed the
+    obsolete gettext-0.10.32 infrastructure and aborted autoreconf. Add new
+    patch gettext_require_version.diff declaring
+    AM_GNU_GETTEXT_REQUIRE_VERSION([0.19.8]), closes: #1126976, #1136751.
+  * The modern gettext infrastructure pulled in that way needs po/Makevars
+    and po/LINGUAS, which upstream never shipped. Add both via new patch
+    po_makevars_linguas.diff (LINGUAS lists "de" to keep the German
+    catalogue).
+  * Make "debian/rules clean" idempotent. dh_autoreconf installs automake's
+    maintainer-mode rebuild rules, so a second build re-ran automake during
+    "make clean" and failed (automake >= 1.16 rejects the old configure.in).
+    Neutralise ACLOCAL/AUTOCONF/AUTOMAKE/AUTOHEADER for that clean invocation.
+  * Also remove the configure/config.status output (Makefile, config.h,
+    config.status, sub-directory Makefiles, Specfile, systype, ...) in the
+    clean target. "make clean" left these behind, so a rebuild aborted in
+    dpkg-source -b with unexpected changes to the 3.0 (quilt) tree.
+  * Fix the remaining C compiler warnings via new patch compiler_warnings.diff:
+    a real -Wformat= bug in src/lsyslog.c (int passed for %ld) and the
+    -Wunused-result warnings for write()/system()/vasprintf() in src/.
+
+ -- Martin A. Godisch <godisch@debian.org>  Thu, 04 Jun 2026 03:24:56 +0200
+
+lrzsz (0.12.21rc-0.3) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Build with -std=gnu17 to workaround FTBFS with GCC 15.
+    (Closes: #1097316)
+
+ -- Adrian Bunk <bunk@debian.org>  Fri, 17 Oct 2025 21:38:08 +0300
 
 lrzsz (0.12.21rc-0.2) unstable; urgency=medium
 

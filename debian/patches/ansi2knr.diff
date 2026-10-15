@@ -1,5 +1,6 @@
 Description: Remove ansi2knr rules
 Author: Bastian Germann <bage@debian.org>
+Forwarded: not-needed
 ---
 --- lrzsz-0.12.21rc.orig/lib/Makefile.am
 +++ lrzsz-0.12.21rc/lib/Makefile.am

@@ -1,3 +1,6 @@
+Description: Drop AC_PREREQ([2.13]) from the bundled automake macros
+Forwarded: not-needed
+
 --- lrzsz-0.12.21.orig/aclocal.m4
 +++ lrzsz-0.12.21/aclocal.m4
 @@ -117,8 +117,6 @@

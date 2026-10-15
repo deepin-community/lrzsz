@@ -1,0 +1,18 @@
+Description: rz: reject absolute pathnames in restricted mode
+ Without PUBDIR (the Debian default build) checkpath() only rejected the
+ literal "../" and accepted sender-supplied absolute pathnames, so a remote
+ sender could create files and directories at any receiver-writable absolute
+ path. Reject a leading '/' when no PUBDIR is configured, restoring the
+ restricted-mode behaviour that rz(1) documents.
+Forwarded: no
+--- fixed.orig/src/lrz.c
++++ fixed/src/lrz.c
+@@ -1629,6 +1629,8 @@ checkpath(const char *name)
+ #ifdef PUBDIR
+ 		 || (name[0]== '/' && strncmp(name, PUBDIR, 
+ 		 	strlen(PUBDIR)))
++#else
++		 || (name[0] == '/')
+ #endif
+ 		) {
+ 			canit(STDOUT_FILENO);

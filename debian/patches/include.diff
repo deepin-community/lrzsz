@@ -1,3 +1,6 @@
+Description: Add missing system includes (stdlib.h)
+Forwarded: not-needed
+
 --- lrzsz-0.12.21.orig/lib/long-options.c
 +++ lrzsz-0.12.21/lib/long-options.c
 @@ -22,6 +22,7 @@

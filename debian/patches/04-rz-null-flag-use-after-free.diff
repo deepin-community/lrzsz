@@ -1,0 +1,15 @@
+Description: rz: fix use-after-free of zi->fname with -D/--null
+ With -D the file name buffer is freed and replaced by strdup("/dev/null"),
+ but zi->fname still pointed at the freed buffer and was used afterwards
+ (e.g. for logging). Repoint zi->fname at the replacement buffer.
+Forwarded: no
+--- fixed.orig/src/lrz.c
++++ fixed/src/lrz.c
+@@ -1358,6 +1358,7 @@ procheader(char *name, struct zm_fileinf
+ 				fprintf(stderr,"%s: %s\n", program_name, _("out of memory"));
+ 				exit(1);
+ 			}
++			zi->fname = name_static;
+ 		}
+ #ifdef OMEN
+ 		/* looks like a security hole -- uwe */

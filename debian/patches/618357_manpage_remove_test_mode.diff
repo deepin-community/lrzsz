@@ -1,0 +1,81 @@
+Description: Drop documentation of the non-existent sz -T/-TT test modes
+ The lsz.1 manual page still described two test/diagnostic modes inherited from
+ Chuck Forsberg's original sz: a "sixth form" sz -TT that supposedly dumps all
+ 256 byte codes to the terminal, and a "TESTING FEATURE" in which sz -T file
+ exercises the Attn error-recovery sequence. Neither exists in lrzsz: -T is
+ bound solely to --turbo (turbo_escape). A user following the manual therefore
+ ran "sz -TT", which is just --turbo twice, and got a normal (failing) transfer
+ to the terminal instead of a diagnosis (Debian #618357). Remove the stale -TT
+ synopsis form, the "sixth form" paragraph, the "TESTING FEATURE" section and
+ the orphaned BUGS sentence so the page matches the actual behaviour.
+Author: Martin A. Godisch <godisch@debian.org>
+Bug-Debian: https://bugs.debian.org/618357
+Forwarded: not-needed
+
+--- lrzsz-0.12.21rc.orig/man/lsz.1
++++ lrzsz-0.12.21rc/man/lsz.1
+@@ -24,8 +24,6 @@
+ sz
+ .RB [\- oqtv ]
+ .B "-i COMMAND"
+-.br
+-sz -TT
+ .SH DESCRIPTION
+ .B Sz
+ uses the ZMODEM, YMODEM or XMODEM error correcting protocol to send
+@@ -161,13 +159,6 @@
+ before it is executed.
+ 
+ 
+-The sixth form (sz -TT)
+-attempts to output all 256 code combinations to the terminal.
+-In you are having difficulty sending files,
+-this command lets you see which character codes are being
+-eaten by the operating system.
+-
+-
+ If
+ .B sz
+ is invoked with stdout and stderr to different datasets,
+@@ -608,33 +599,6 @@
+ 
+ /tmp/szlog stores debugging output (sz -vv)
+ (szlog on VMS).
+-.SH "TESTING FEATURE"
+-The command "sz -T file"
+-exercises the
+-.B Attn
+-sequence error recovery by commanding
+-errors with unterminated packets.
+-The receiving program should complain five times about
+-binary data packets being too long.
+-Each time
+-.B sz
+-is interrupted,
+-it should send a ZDATA header followed by another defective packet.
+-If the receiver does not detect five long data packets,
+-the
+-.B Attn
+-sequence is not interrupting the sender, and the
+-.B Myattn
+-string in
+-.B sz.c
+-must be modified.
+-
+-After 5 packets,
+-.B sz
+-stops the "transfer" and
+-prints the total number of characters "sent" (Tcount).
+-The difference between Tcount and 5120 represents the number of characters
+-stored in various buffers when the Attn sequence is generated.
+ .SH BUGS
+ Calling
+ .I sz
+@@ -679,7 +643,6 @@
+ sends a ZMODEM command to echo a suitable complaint;
+ perhaps it should check for the presence of at least one accessible file before
+ getting hot and bothered.
+-The test mode leaves a zero length file on the receiving system.
+ 
+ A few high speed modems have a firmware bug that drops characters when the
+ direction of high speed transmission is reversed.

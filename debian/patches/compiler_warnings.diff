@@ -1,0 +1,101 @@
+Description: Fix the remaining compiler warnings in the C sources
+ Targets the warnings that survived warnings.diff, all in src/:
+ .
+  * lsyslog.c (-Wformat=): the dszlog() fprintf() uses %ld conversions but
+    passed plain int arguments (cps*8, cps and the -1 serial-number literal).
+    Passing an int where the format expects a long is undefined behaviour in
+    a variadic call and prints garbage on ABIs where int and long differ in
+    size. Cast those three arguments to long.
+  * lsyslog.c, lrz.c, zm.c, canit.c, lsz.c (-Wunused-result): the return
+    values of write(), system() and vasprintf() were discarded, which the
+    fortified glibc headers flag. Consume them explicitly: the best-effort
+    write()/system() calls are wrapped in "if (... ) { }" guards, and on a
+    vasprintf() failure the target pointer is set to NULL so that the later
+    syslog() and free() operate on a well-defined value.
+ .
+ No functional change beyond the vasprintf() NULL safeguard.
+Author: Martin A. Godisch <godisch@debian.org>
+Last-Update: 2026-06-04
+Forwarded: not-needed
+---
+--- lrzsz-0.12.21rc.orig/src/lsyslog.c
++++ lrzsz-0.12.21rc/src/lsyslog.c
+@@ -73,7 +73,8 @@
+ 	}
+ 
+     VA_START(ap, format);
+-    vasprintf(&s,format, ap);
++    if (vasprintf(&s, format, ap) < 0)
++        s = NULL; /* vasprintf() failed: keep s well-defined for syslog()/free() */
+     va_end(ap);
+     syslog(prio,"[%s] %s",username,s);
+ 	free(s);
+@@ -91,13 +92,13 @@
+ 		fprintf(mylog, "%c %6ld %5ld bps %4ld cps %3d errors %5u %4d %s %ld\r\n",
+ 				status,
+ 				num_bytes,
+-				cps*8, /* XXX where to get DTE from? */
+-				cps,
++				(long) (cps*8), /* XXX where to get DTE from? */
++				(long) cps,
+ 				retry_events,
+ 				flow_events, /* XXX where is flow_control? */
+ 				blocksize,
+ 				fname,
+-				-1 /* serial number */
++				(long) -1 /* serial number */
+ 				);
+ 		fclose(mylog);
+ 	}
+--- lrzsz-0.12.21rc.orig/src/lrz.c
++++ lrzsz-0.12.21rc/src/lrz.c
+@@ -2215,12 +2215,12 @@
+ 		p=strpbrk(s,"\335\336");
+ 		if (!p)
+ 		{
+-			write(1,s,strlen(s));
++			if (write(1,s,strlen(s)) < 0) { /* best-effort console output; ignore */ }
+ 			return;
+ 		}
+ 		if (p!=s)
+ 		{
+-			write(1,s,(size_t) (p-s));
++			if (write(1,s,(size_t) (p-s)) < 0) { /* best-effort console output; ignore */ }
+ 			s=p;
+ 		}
+ 		if (*p=='\336')
+--- lrzsz-0.12.21rc.orig/src/zm.c
++++ lrzsz-0.12.21rc/src/zm.c
+@@ -417,7 +417,7 @@
+ 		s[len++]=021;
+ 	}
+ 	flushmo();
+-	write(1,s,len);
++	if (write(1,s,len) < 0) { /* best-effort output; ignore */ }
+ }
+ 
+ /*
+--- lrzsz-0.12.21rc.orig/src/canit.c
++++ lrzsz-0.12.21rc/src/canit.c
+@@ -40,8 +40,8 @@
+ 		24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 0
+ 	};
+ 	purgeline(fd);
+-	write(fd,canistr,strlen(canistr));
++	if (write(fd,canistr,strlen(canistr)) < 0) { /* best-effort; ignore */ }
+ 	if (fd==0)
+-		write(1,canistr,strlen(canistr));
++		if (write(1,canistr,strlen(canistr)) < 0) { /* best-effort; ignore */ }
+ }
+ 
+--- lrzsz-0.12.21rc.orig/src/lsz.c
++++ lrzsz-0.12.21rc/src/lsz.c
+@@ -2455,7 +2455,7 @@
+ 			return OK;
+ 		case ZRQINIT:
+ 			vfile("******** RZ *******");
+-			system("rz");
++			if (system("rz") == -1) { /* best-effort spawn of rz; ignore */ }
+ 			vfile("******** SZ *******");
+ 			goto listen;
+ 		}

@@ -2,9 +2,11 @@ This is the lrzsz Debian GNU/Linux package. It was first maintained by
 Michael Alan Dorman <mdorman@debian.org>, with help of Martin Mitchell
 and current upstream maintainer, Uwe Ohse <uwe@ohse.de>.
 
-Current maintainer is Josip Rodin <jrodin@jagor.srce.hr>
+After Josip Rodin <jrodin@jagor.srce.hr>, its current maintainer is
+Martin A. Godisch <godisch@debian.org>
 
-Original source was downloaded from: ftp://tirka.ohse.de/uwe/
+Original source was downloaded from:
+https://ohse.de/uwe/testing/lrzsz-0.12.21rc.tar.gz
 
 Copyright (C) until 1988 Chuck Forsberg (Omen Technology INC)
 Copyright (C) 1994 Matt Porter, Michael D. Black

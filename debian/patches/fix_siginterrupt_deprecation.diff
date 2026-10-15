@@ -1,0 +1,93 @@
+Description: Replace deprecated siginterrupt() with sigaction()
+ siginterrupt(SIGALRM, 1) in lrz.c/lsz.c flagged the C library so that the
+ SIGALRM handlers later installed with signal() in zreadline.c and tcp.c would
+ not set SA_RESTART, i.e. the timeout alarm interrupts the blocking
+ read()/accept()/connect() instead of restarting it. siginterrupt() is now
+ deprecated (-Wdeprecated-declarations). Install those three handlers directly
+ with sigaction() and sa_flags = 0, which expresses the same "do not restart"
+ semantics locally, and drop the now-unneeded siginterrupt() calls. No
+ behavioural change; sigaction() is POSIX and always available on Debian.
+Author: Martin A. Godisch <godisch@debian.org>
+Forwarded: not-needed
+
+--- lrzsz-0.12.21rc.orig/src/lrz.c
++++ lrzsz-0.12.21rc/src/lrz.c
+@@ -496,9 +496,6 @@
+ 
+ 	/* initialize zsendline tab */
+ 	zsendline_init();
+-#ifdef HAVE_SIGINTERRUPT
+-	siginterrupt(SIGALRM,1);
+-#endif
+ 	if (startup_delay)
+ 		sleep(startup_delay);
+ 
+--- lrzsz-0.12.21rc.orig/src/lsz.c
++++ lrzsz-0.12.21rc/src/lsz.c
+@@ -628,10 +628,6 @@
+ 	if (startup_delay)
+ 		sleep(startup_delay);
+ 
+-#ifdef HAVE_SIGINTERRUPT
+-	/* we want interrupted system calls to fail and not to be restarted. */
+-	siginterrupt(SIGALRM,1);
+-#endif
+ 
+ 
+ 	npats = argc - optind;
+--- lrzsz-0.12.21rc.orig/src/tcp.c
++++ lrzsz-0.12.21rc/src/tcp.c
+@@ -99,7 +99,15 @@
+ 	memset((char*)&s,0, namelen);
+ 
+ retry:
+-	signal(SIGALRM, tcp_alarm_handler);
++	{
++		/* No SA_RESTART: let the alarm interrupt accept() (was
++		 * governed by the deprecated siginterrupt() in lrz/lsz). */
++		struct sigaction sa;
++		sa.sa_handler = tcp_alarm_handler;
++		sigemptyset(&sa.sa_mask);
++		sa.sa_flags = 0;
++		sigaction(SIGALRM, &sa, NULL);
++	}
+ 	alarm(30);
+ 	if ((so = accept(d, (struct sockaddr*)&s, &namelen)) < 0) {
+ 		if (errno == EINTR) {
+@@ -160,7 +168,15 @@
+ 		error(1,errno,"socket");
+ 	}
+ 
+-	signal(SIGALRM, tcp_alarm_handler);
++	{
++		/* No SA_RESTART: let the alarm interrupt connect() (was
++		 * governed by the deprecated siginterrupt() in lrz/lsz). */
++		struct sigaction sa;
++		sa.sa_handler = tcp_alarm_handler;
++		sigemptyset(&sa.sa_mask);
++		sa.sa_flags = 0;
++		sigaction(SIGALRM, &sa, NULL);
++	}
+ 	alarm(30);
+ 	if (connect (sock, (struct sockaddr *) &s_in, sizeof (s_in)) < 0) {
+ 		error(1,errno,"connect");
+--- lrzsz-0.12.21rc.orig/src/zreadline.c
++++ lrzsz-0.12.21rc/src/zreadline.c
+@@ -71,7 +71,16 @@
+ 		if (Verbose > 5)
+ 			vstringf("Calling read: alarm=%d  Readnum=%lu ",
+ 			  n, readline_readnum);
+-		signal(SIGALRM, zreadline_alarm_handler); 
++		{
++			/* Install the handler without SA_RESTART so that the
++			 * alarm interrupts the following read() instead of
++			 * restarting it. Replaces the deprecated siginterrupt(). */
++			struct sigaction sa;
++			sa.sa_handler = zreadline_alarm_handler;
++			sigemptyset(&sa.sa_mask);
++			sa.sa_flags = 0;
++			sigaction(SIGALRM, &sa, NULL);
++		}
+ 		alarm(n);
+ 	}
+ 	else if (Verbose > 5)

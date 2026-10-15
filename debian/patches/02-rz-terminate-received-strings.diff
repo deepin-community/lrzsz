@@ -1,0 +1,45 @@
+Description: rz: bound received file name length and terminate data subpackets
+ zrdata()/zrdat32() left the receive buffer unterminated, and procheader() then
+ read the name with strlen() and parsed trailing attributes at
+ name + 1 + strlen(name). A maximum-length ZFILE name without a NUL byte caused
+ an out-of-bounds read, and copying such a name into the PATH_MAX*2 Pathname
+ buffer overran it by one byte. Terminate the buffer after the payload, and
+ reject names of PATH_MAX or longer in procheader(): on this platform PATH_MAX
+ (4096) is below the receive buffer size, so the bound keeps both the attribute
+ parsing and the Pathname copy inside their buffers, and such names cannot name
+ a file anyway.
+Forwarded: no
+--- fixed.orig/src/zm.c
++++ fixed/src/zm.c
+@@ -576,6 +576,7 @@ crcfoo:
+ 						return ERROR;
+ 					}
+ 					*bytes_received = length - (end - buf);
++					*buf = '\0';	/* terminate: name/attn parsed as C string */
+ 					COUNT_BLK(*bytes_received);
+ 					VPRINTF(3,("zrdata: %lu  %s", (unsigned long) (*bytes_received), 
+ 							Zendnames[(d-GOTCRCE)&3]));
+@@ -636,6 +637,7 @@ crcfoo:
+ 					return ERROR;
+ 				}
+ 				*bytes_received = length - (end - buf);
++				*buf = '\0';	/* terminate: name/attn parsed as C string */
+ 				COUNT_BLK(*bytes_received);
+ 				VPRINTF(3,("zrdat32: %lu %s", (unsigned long) *bytes_received, 
+ 					Zendnames[(d-GOTCRCE)&3]));
+--- fixed.orig/src/lrz.c
++++ fixed/src/lrz.c
+@@ -1141,6 +1141,13 @@ procheader(char *name, struct zm_fileinf
+ 			name=p;
+ 		}
+ 	}
++	if (strlen(name) >= PATH_MAX) {
++		/* over-long names cannot open and would overrun nameend/Pathname */
++		if (Verbose) {
++			vstringf(_("file name too long, skipped: %s\n"), name);
++		}
++		return ERROR;
++	}
+ 	name_static=malloc(strlen(name)+1);
+ 	if (!name_static)
+ 		error(1,0,_("out of memory"));
