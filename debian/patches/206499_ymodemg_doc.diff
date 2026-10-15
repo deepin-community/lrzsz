@@ -1,0 +1,32 @@
+Description: Clarify in lsz.1 that YMODEM-g must be requested by the receiver
+ The sb manual page advertises YMODEM-g support, which led to the report that
+ the feature was "nowhere to be found" (Debian #206499): YMODEM-g is in fact
+ implemented on the send side (sb streams without per-sector ACKs once the
+ receiver sends 'G' instead of the usual start character), but the receiver
+ shipped with lrzsz (rb/rz) cannot request it, so a user driving both ends with
+ this package never sees it. Add a note to the sb description spelling out that
+ sb never enables YMODEM-g on its own and that lrzsz's own rb does not request
+ it, so a separate receiving program is required. Documentation only.
+Author: Martin A. Godisch <godisch@debian.org>
+Bug-Debian: https://bugs.debian.org/206499
+Forwarded: not-needed
+
+--- lrzsz-0.12.21rc.orig/man/lsz.1
++++ lrzsz-0.12.21rc/man/lsz.1
+@@ -107,6 +107,16 @@
+ increases throughput over error free channels
+ (direct connection, X.PC, etc.)
+ by not acknowledging each transmitted sector.
++Note that
++.B sb
++never enables YMODEM-g on its own; the receiving program must request it by
++sending
++.B g
++instead of the usual start character.
++The receiver included in this package
++.RB ( rb )
++does not request YMODEM-g, so a separate receiving program is required to
++use it.
+ 
+ On
+ .SM Unix

@@ -1,0 +1,26 @@
+Description: Fix the XMODEM "Blocks received" counter past block 255
+ wcrx() reported wcgetsec()'s return value, i.e. the raw one-byte XMODEM block
+ number, which wraps 255 -> 0 -> 1. From block 256 on the counter therefore
+ restarted at 0; because report() redraws the line with a bare carriage return,
+ the shorter new number left the trailing digits of the previous one on screen,
+ so "256" showed up as "055", "257" as "155" and so on. Report the running,
+ non-wrapping sector total (sectnum) instead, and only once a block has actually
+ been accepted. The counter now climbs monotonically (...255, 256, 257, ...),
+ which also removes the stale-digit artefact since its width never shrinks.
+Author: Martin A. Godisch <godisch@debian.org>
+Bug-Debian: https://bugs.debian.org/156249
+Forwarded: not-needed
+
+--- lrzsz-0.12.21rc.orig/src/lrz.c
++++ lrzsz-0.12.21rc/src/lrz.c
+@@ -914,9 +914,9 @@
+ 		purgeline(0);	/* Do read next time ... */
+ 		sectcurr=wcgetsec(&Blklen, secbuf, 
+ 			(unsigned int) ((sectnum&0177) ? 50 : 130));
+-		report(sectcurr);
+ 		if (sectcurr==((sectnum+1) &0377)) {
+ 			sectnum++;
++			report(sectnum);
+ 			/* if using xmodem we don't know how long a file is */
+ 			if (zi->bytes_total && R_BYTESLEFT(zi) < Blklen)
+ 				Blklen=R_BYTESLEFT(zi);

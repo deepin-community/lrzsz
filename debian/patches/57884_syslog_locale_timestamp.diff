@@ -1,0 +1,33 @@
+Description: Keep syslog timestamps locale-independent
+ lrz and lsz call setlocale(LC_ALL, "") so that gettext picks up the user's
+ language. That also sets LC_TIME, which the C library's syslog() honoured when
+ formatting the per-message timestamp, so sz/rz lines in the system log carried
+ a translated month name (e.g. the Bulgarian month abbreviation in #57884)
+ while every other line stayed in English. Only message translation needs the
+ environment locale, so reset LC_TIME back to "C" right after; this leaves
+ gettext and LC_CTYPE untouched and has no effect on the programs' own output
+ (their sole strftime use is the numeric "%H:%M:%S").
+Author: Martin A. Godisch <godisch@debian.org>
+Bug-Debian: https://bugs.debian.org/57884
+Forwarded: not-needed
+
+--- lrzsz-0.12.21rc.orig/src/lrz.c
++++ lrzsz-0.12.21rc/src/lrz.c
+@@ -288,6 +288,7 @@
+ #endif
+ 
+ 	setlocale (LC_ALL, "");
++	setlocale (LC_TIME, "C");		/* keep syslog timestamps untranslated, #57884 */
+ 	bindtextdomain (PACKAGE, LOCALEDIR);
+ 	textdomain (PACKAGE);
+ 
+--- lrzsz-0.12.21rc.orig/src/lsz.c
++++ lrzsz-0.12.21rc/src/lsz.c
+@@ -354,6 +354,7 @@
+ #endif
+ 
+ 	setlocale (LC_ALL, "");
++	setlocale (LC_TIME, "C");		/* keep syslog timestamps untranslated, #57884 */
+ 	bindtextdomain (PACKAGE, LOCALEDIR);
+ 	textdomain (PACKAGE);
+ 

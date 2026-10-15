@@ -1,3 +1,7 @@
+Description: Fix zsdata() zero-length data subpacket handling
+Bug-Debian: https://bugs.debian.org/897010
+Forwarded: not-needed
+
 --- lrzsz-0.12.21/src/zm.c.orig	1999-06-03 17:43:16.000000000 +0200
 +++ lrzsz-0.12.21/src/zm.c	2018-05-01 15:13:31.286415749 +0200
 @@ -432,10 +432,12 @@

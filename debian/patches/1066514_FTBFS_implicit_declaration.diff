@@ -1,6 +1,7 @@
 Description: Fixes FTBFS (missing includes)
 Author: Martin A. Godisch <godisch@debian.org>
 Bug-Debian: https://bugs.debian.org/1066514
+Forwarded: not-needed
 
 --- lrzsz-0.12.21.orig/lib/error.c
 +++ lrzsz-0.12.21/lib/error.c

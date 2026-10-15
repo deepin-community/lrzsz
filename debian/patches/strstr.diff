@@ -1,3 +1,6 @@
+Description: Drop the conflicting extern strstr() declaration
+Forwarded: not-needed
+
 --- lrzsz-0.12.21.orig/src/lrz.c
 +++ lrzsz-0.12.21/src/lrz.c
 @@ -44,7 +44,6 @@

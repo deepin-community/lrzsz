@@ -1,0 +1,32 @@
+Description: Add AM_GNU_GETTEXT_REQUIRE_VERSION to fix autopoint FTBFS
+ configure.in calls AM_GNU_GETTEXT (turned into AM_GNU_GETTEXT([external]) by
+ gettext_external.diff) but never declares a gettext infrastructure version.
+ Modern autopoint (gettext >= 0.18; sid currently ships 0.26) then falls back
+ to the pre-versioning 0.10.x scheme, requests the long-removed
+ gettext-0.10.32 layout and aborts autoreconf with "requires the
+ infrastructure from gettext-0.10.32 but this version is older". Declaring a
+ modern minimum via AM_GNU_GETTEXT_REQUIRE_VERSION([0.19.8]) gives autopoint a
+ valid version to work from; the newer gettext installed on the build host is
+ used at build time.
+Author: Martin A. Godisch <godisch@debian.org>
+Last-Update: 2026-06-04
+Forwarded: not-needed
+---
+--- lrzsz-0.12.21rc.orig/configure.in
++++ lrzsz-0.12.21rc/configure.in
+@@ -268,6 +268,15 @@
+ AC_SUBST(LDFLAGS)
+ AC_SUBST(LIBS)
+ 
++dnl Declare the minimum GNU gettext infrastructure version that autopoint
++dnl must provide. This line is required by modern autopoint (gettext >= 0.18):
++dnl when it is missing, autopoint falls back to the pre-versioning 0.10.x
++dnl scheme, decides that the (no longer shipped) gettext-0.10.32 layout is
++dnl needed, and aborts autoreconf. 0.19.8 is the first release providing the
++dnl AM_GNU_GETTEXT_REQUIRE_VERSION macro itself, so it is a safe minimum; the
++dnl newer gettext actually installed on the build host is used at build time.
++AM_GNU_GETTEXT_REQUIRE_VERSION([0.19.8])
++
+ AM_GNU_GETTEXT([external])
+ 
+ AC_DEFINE_UNQUOTED(LOCALEDIR,"$prefix/$DATADIRNAME")

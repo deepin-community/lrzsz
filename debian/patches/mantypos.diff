@@ -1,3 +1,6 @@
+Description: Fix a groff macro typo in lsz.1 (missing space after .B)
+Forwarded: not-needed
+
 --- lrzsz-0.12.21.orig/man/lsz.1
 +++ lrzsz-0.12.21/man/lsz.1
 @@ -247,7 +247,7 @@

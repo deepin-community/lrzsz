@@ -2,6 +2,8 @@
 
 testdir  = test -f src/lrz.c && test -f debian/rules
 
+export DEB_CFLAGS_MAINT_APPEND = -std=gnu17
+
 include /usr/share/dpkg/architecture.mk
 
 ifeq ($(origin CC),default)
@@ -35,11 +37,26 @@ build-stamp:
 
 clean:
 	$(testdir)
-	[ ! -f Makefile ] || $(MAKE) clean
+# Neutralise the autotools while cleaning. The build-time dh_autoreconf
+# regenerates Makefile.in with automake's maintainer-mode rebuild rules. On a
+# second build "make clean" would otherwise see Makefile.am newer than the
+# leftover Makefile.in and re-run automake against the pre-modern configure.in,
+# which automake >= 1.16 rejects. Forcing the tools to ":" turns those rebuild
+# rules into harmless no-ops; the assignments propagate to the sub-makes.
+	[ ! -f Makefile ] || $(MAKE) clean ACLOCAL=: AUTOCONF=: AUTOMAKE=: AUTOHEADER=:
 	dh_autoreconf_clean
 	dh_clean
 	rm -rf debian/tmp
 	rm -f build-stamp po/lrzsz.pot po/*.gmo debian/substvars
+# Remove the files produced by configure/config.status. "make clean" only
+# deletes objects and binaries, leaving these behind; on a rebuild they would
+# count as unexpected changes to the 3.0 (quilt) upstream tree and make
+# dpkg-source -b abort. They are all generated from .in templates shipped in
+# the orig tarball, so removing them restores the pristine (patched) source.
+	rm -f Makefile config.h config.log config.status stamp-h stamp-h1 \
+	      Specfile systype src/lrzszbug \
+	      intl/Makefile lib/Makefile man/Makefile src/Makefile \
+	      testsuite/Makefile po/Makefile po/Makefile.in
 
 binary: binary-arch binary-indep
 
@@ -74,6 +91,10 @@ endif
 	chmod -R go=u-w debian/tmp
 
 	dpkg-shlibdeps debian/tmp/usr/bin/*
+# This hand-written rules file does not run the debhelper tools that would
+# normally define ${misc:Depends}; declare it empty so the substvar referenced
+# in debian/control resolves without a warning (no debhelper-added deps here).
+	echo 'misc:Depends=' >> debian/substvars
 	dpkg-gencontrol -plrzsz
 	find debian/tmp -depth -newermt '$(BUILD_DATE)' -print0 | xargs -0r touch --no-dereference --date='$(BUILD_DATE)'
 	dpkg-deb --root-owner-group --build debian/tmp ..

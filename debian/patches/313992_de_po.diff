@@ -1,3 +1,8 @@
+Description: Update the German message catalogue (po/de.po)
+Author: Tobias Toedter <t.toedter@gmx.net>
+Bug-Debian: https://bugs.debian.org/313992
+Forwarded: not-needed
+
 --- lrzsz-0.12.21/po/de.po.orig	1999-08-22 21:59:09.000000000 +0200
 +++ lrzsz-0.12.21/po/de.po	2013-12-28 17:14:02.742048293 +0100
 @@ -1,17 +1,18 @@

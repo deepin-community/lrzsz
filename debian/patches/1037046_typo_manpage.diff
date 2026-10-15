@@ -1,6 +1,7 @@
 Description: Fixed typo in manpage
 Author: Uwe Kleine-König <ukleinek@debian.org>
 Bug-Debian: https://bugs.debian.org/1066514
+Forwarded: not-needed
 
 --- lrzsz-0.12.21.orig/man/lrz.1
 +++ lrzsz-0.12.21/man/lrz.1

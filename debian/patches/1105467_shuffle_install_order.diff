@@ -1,0 +1,24 @@
+Description: Fix FTBFS with make --shuffle=reverse
+ automake wires install-exec-local into install-exec-am next to
+ install-binPROGRAMS but does not order the two. install-exec-local hard-links
+ the already-installed binaries (sz, rz), so it only works because make happens
+ to honour the prerequisite list order. With make --shuffle=reverse it runs
+ before install-binPROGRAMS, the link targets do not exist yet and ln aborts
+ with "failed to access '.../usr/bin/sz'". Make the ordering explicit.
+Author: Martin A. Godisch <godisch@debian.org>
+Bug-Debian: https://bugs.debian.org/1105467
+Forwarded: not-needed
+
+--- lrzsz-0.12.21rc.orig/src/Makefile.am
++++ lrzsz-0.12.21rc/src/Makefile.am
+@@ -14,7 +14,9 @@ INCLUDES = -I.. -I$(srcdir) -I$(top_srcd
+ #DEFS = -DLOCALEDIR=\"$(localedir)\" -DOS=\"@host_os@\" -DCPU=\"@host_cpu@\"
+ DEFS = -DNFGVMIN @DEFS@ -DLOCALEDIR=\"$(localedir)\"
+ 
+-install-exec-local:
++# The hard links below point at the installed binaries, so those must exist
++# first. Order it explicitly, otherwise FTBFS with make --shuffle=reverse.
++install-exec-local: install-binPROGRAMS
+ 	rm -f $(DESTDIR)/$(bindir)/`echo lsb | sed -e '$(transform)'`
+ 	ln $(DESTDIR)/$(bindir)/`echo lsz |sed -e '$(transform)'` \
+ 		$(DESTDIR)/$(bindir)/`echo lsb |sed -e '$(transform)'` 

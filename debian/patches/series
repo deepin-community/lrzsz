@@ -13,4 +13,16 @@ configure.in.diff
 ansi2knr.diff
 gettext_external.diff
 ignore-intl.diff
-0016-feat-add-sw-support.patch
+gettext_require_version.diff
+po_makevars_linguas.diff
+compiler_warnings.diff
+1105467_shuffle_install_order.diff
+57884_syslog_locale_timestamp.diff
+156249_xmodem_block_counter.diff
+fix_siginterrupt_deprecation.diff
+618357_manpage_remove_test_mode.diff
+206499_ymodemg_doc.diff
+01-rz-reject-absolute-paths.diff
+02-rz-terminate-received-strings.diff
+03-rz-junk-path-double-free.diff
+04-rz-null-flag-use-after-free.diff

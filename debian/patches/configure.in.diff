@@ -1,5 +1,6 @@
 Description: Remove de-ANSI-ficcation
 Author: Bastian Germann <bage@debian.org>
+Forwarded: not-needed
 ---
 --- lrzsz-0.12.21rc.orig/configure.in
 +++ lrzsz-0.12.21rc/configure.in
