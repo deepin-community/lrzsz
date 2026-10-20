@@ -14,3 +14,4 @@ ansi2knr.diff
 gettext_external.diff
 ignore-intl.diff
 0016-feat-add-sw-support.patch
+CVE-2026-105840.patch

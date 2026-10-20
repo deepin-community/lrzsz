@@ -1,3 +1,12 @@
+lrzsz (0.12.21rc-0.2deepin2) unstable; urgency=medium
+
+  * fix(cve): CVE-2026-105840 (high) - remove PUBDIR, fix the 2nd
+    security hole found by tristaninsec   Upstream:
+    https://github.com/UweOhse/lrzsz/commit/b1fc8a01e3a074f8462a29dca45e
+    d7c8fd2ef665
+
+ -- deepin-ci-robot <packages@deepin.org>  Tue, 20 Oct 2026 18:30:11 +0800
+
 lrzsz (0.12.21rc-0.2deepin1) unstable; urgency=medium
 
   * Add sw support.
