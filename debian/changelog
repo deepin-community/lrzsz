@@ -1,3 +1,12 @@
+lrzsz (0.12.21rc-0.2deepin2) unstable; urgency=medium
+
+  * fix(cve): CVE-2026-105841 (high) - remove topipe 'feature'
+    Upstream:
+    https://github.com/UweOhse/lrzsz/commit/9eef71ce20fda2b345ef8431359a
+    ec96121215bd
+
+ -- deepin-ci-robot <packages@deepin.org>  Tue, 20 Oct 2026 17:52:30 +0800
+
 lrzsz (0.12.21rc-0.2deepin1) unstable; urgency=medium
 
   * Add sw support.
