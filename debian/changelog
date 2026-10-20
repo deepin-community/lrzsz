@@ -4,6 +4,10 @@ lrzsz (0.12.21rc-0.2deepin2) unstable; urgency=medium
     security hole found by tristaninsec   Upstream:
     https://github.com/UweOhse/lrzsz/commit/b1fc8a01e3a074f8462a29dca45e
     d7c8fd2ef665
+  * fix(cve): CVE-2026-105842 (medium) - fix heap buffer overflow in
+    procheader()   Upstream:
+    https://github.com/UweOhse/lrzsz/commit/f8caa7b1b1a3a1bb50cf08677b15
+    be7b17c2956f
 
  -- deepin-ci-robot <packages@deepin.org>  Tue, 20 Oct 2026 18:30:11 +0800
 
