@@ -1,11 +1,17 @@
 lrzsz (0.12.21rc-0.2deepin2) unstable; urgency=medium
 
   * fix(cve): CVE-2026-105840 (high) - remove PUBDIR, fix the 2nd
-    security hole found by tristaninsec   Upstream:
+    security hole found by tristaninsec
+    Upstream:
     https://github.com/UweOhse/lrzsz/commit/b1fc8a01e3a074f8462a29dca45e
     d7c8fd2ef665
+  * fix(cve): CVE-2026-105841 (high) - remove topipe 'feature'
+    Upstream:
+    https://github.com/UweOhse/lrzsz/commit/9eef71ce20fda2b345ef8431359a
+    ec96121215bd
   * fix(cve): CVE-2026-105842 (medium) - fix heap buffer overflow in
-    procheader()   Upstream:
+    procheader()
+    Upstream:
     https://github.com/UweOhse/lrzsz/commit/f8caa7b1b1a3a1bb50cf08677b15
     be7b17c2956f
 
